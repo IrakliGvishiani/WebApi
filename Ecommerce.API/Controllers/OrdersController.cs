@@ -13,28 +13,5 @@ namespace Ecommerce.API.Controllers
         {
             _orderRepository = orderRepository;
         }
-         [HttpGet]
-
-         public async Task<IActionResult> GetAllOrders()
-        {
-            var orders = await _orderRepository.GetAllOrdersAsync();
-
-            if (orders == null || !orders.Any())
-            {
-                return NotFound("Orders are empty!");
-            }
-            return Ok(orders);
-        }
-
-        [HttpGet("single/{id}")]
-        public async Task<IActionResult> GetOrderById(Guid Id)
-        {
-            var order = await _orderRepository.GetOrderByIdAsync(Id);
-            if (order == null)
-            {
-                return NotFound("Order not found!");
-            }
-            return Ok(order);
-        }
     }
 }

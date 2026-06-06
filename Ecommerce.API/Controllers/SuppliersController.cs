@@ -1,4 +1,6 @@
-﻿using Ecommerce.API.Repository.Interfaces;
+﻿using Ecommerce.API.Models.SupplierDtos;
+using Ecommerce.API.Repository.Interfaces;
+using Ecommerce.API.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
@@ -7,37 +9,56 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     public class SuppliersController : ControllerBase
     {
-        private readonly ISupplierRepository _supplierRepository;
+        private readonly ISupplierService _supplierService;
 
 
-        public SuppliersController(ISupplierRepository supplierRepository)
+        public SuppliersController(ISupplierService supplierService)
         {
-            _supplierRepository = supplierRepository;
+            _supplierService = supplierService;
         }
-         
+
         [HttpGet]
+
         public async Task<IActionResult> GetAllSuppliers()
         {
-            var suppliers = await _supplierRepository.GetAllSupplierAsync();
-            if (suppliers == null || !suppliers.Any())
-            {
-                return NotFound("Suppliers are empty!");
-            }
+            var suppliers = await _supplierService.GetAllSupplierAsync();
+
             return Ok(suppliers);
         }
 
-        [HttpGet("single/{Id}")]
+        [HttpPost]
 
-        public async Task<IActionResult> GetSupplierById(Guid Id)
+        public async Task<IActionResult> CreateNewSupplier([FromBody] SupplierForCreatingDto dto)
         {
-             var supplier = await _supplierRepository.GetSupplierByIdAsync(Id);
-            if (supplier == null)
+            await _supplierService.CreateNewSupplierAsync(dto);
+
+            return Created();
+        }
+
+        [HttpPut]
+
+        public async Task<IActionResult> UpdateSupplier([FromBody] SupplierForUpdatingDto dto)
+        {
+
+          var result =  await _supplierService.UpdateSupplierAsync(dto);
+            if (result == 0)
             {
-                return NotFound("Supplier not found!");
+                return NotFound();
             }
-            return Ok(supplier);
+
+            return Ok("Updated Succesfully");
 
         }
 
+        [HttpDelete("{Id}")]
+
+        public async Task<IActionResult> DeleteSupplier([FromRoute] Guid Id)
+        {
+           var result = await _supplierService.DeleteSupplierAsync(Id);
+            if(result == 0)
+                return NotFound();
+
+            return Ok("Deleted Successfully!");
+        }
     }
 }

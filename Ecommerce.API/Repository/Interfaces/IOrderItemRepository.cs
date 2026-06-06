@@ -1,18 +1,10 @@
-﻿using Ecommerce.API.Entities;
+﻿using Ecommerce.API.Data;
+using Ecommerce.API.Entities;
+using Ecommerce.API.Repository.Base;
 
 namespace Ecommerce.API.Repository.Interfaces
 {
-    public interface IOrderItemRepository
+    public interface IOrderItemRepository : IRepositoryBase<OrderItem, ApplicationDbContext>
     {
-
-        Task<IEnumerable<OrderItem>> GetAllOrderItemsAsync();
-
-        Task<OrderItem> GetOrderItemByIdAsync(Guid id);
-
-        Task AddOrderItemAsync(OrderItem orderItem);
-
-        Task UpdateOrderItemAsync(OrderItem orderItem);
-
-        Task DeleteOrderItemAsync(Guid id);
     }
 }

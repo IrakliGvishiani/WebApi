@@ -18,7 +18,7 @@ namespace Ecommerce.API.Entities
         [MaxLength(50)]
         public string? Status { get; set; } 
 
-        public decimal Dicount { get; set; }
+        public decimal Discount { get; set; }
 
         [Required]
         [ForeignKey(nameof(Customer))]

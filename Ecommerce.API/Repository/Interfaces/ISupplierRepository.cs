@@ -1,15 +1,10 @@
-﻿using Ecommerce.API.Entities;
+﻿using Ecommerce.API.Data;
+using Ecommerce.API.Entities;
+using Ecommerce.API.Repository.Base;
 
 namespace Ecommerce.API.Repository.Interfaces
 {
-    public interface ISupplierRepository
+    public interface ISupplierRepository : IRepositoryBase<Supplier, ApplicationDbContext>
     {
-        Task<IEnumerable<Supplier>> GetAllSupplierAsync();
-        Task<Supplier> GetSupplierByIdAsync(Guid id);
-
-        Task AddSupplierAsync(Supplier supplier);
-        Task UpdateSupplierAsync(Supplier supplier);
-
-        Task DeleteSupplierAsync(Guid id);
     }
 }

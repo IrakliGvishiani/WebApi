@@ -1,16 +1,10 @@
-﻿using Ecommerce.API.Entities;
+﻿using Ecommerce.API.Data;
+using Ecommerce.API.Entities;
+using Ecommerce.API.Repository.Base;
 
 namespace Ecommerce.API.Repository.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRepository : IRepositoryBase<Product, ApplicationDbContext>
     {
-
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-
-        Task<Product> GetProductByIdAsync(Guid id);
-
-        Task AddProductAsync(Product product);
-        Task UpdateProductAsync(Product product);
-        Task DeleteProductAsync(Guid id);
     }
 }

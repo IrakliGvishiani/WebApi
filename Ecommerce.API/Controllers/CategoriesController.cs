@@ -1,6 +1,10 @@
 ﻿using Ecommerce.API.Entities;
+using Ecommerce.API.Models.CategoryDtos;
 using Ecommerce.API.Repository.Interfaces;
+using Ecommerce.API.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
+using static Ecommerce.API.Models.Examples;
 
 namespace Ecommerce.API.Controllers
 {
@@ -8,72 +12,53 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(ICategoryRepository categoryRepository)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _categoryRepository = categoryRepository;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var categories = await _categoryRepository.GetAllCategoriesAsync();
-            if (categories == null || !categories.Any())
-            {
-                return NotFound("Categories are empty!");
-            }
-            return Ok(categories);
-        }
+            var result = await _categoryService.GetAllCategoryAsync();
 
-        [HttpGet("single/{Id}")]
-
-        public async Task<IActionResult> GetCategoryById(Guid Id)
-        {
-            var category = await _categoryRepository.GetCategoryByIdAsync(Id);
-            if (category == null)
-            {
-                return NotFound("Category not found!");
-            }
-            return Ok(category);
+            return Ok(result);
         }
 
         [HttpPost]
+        [SwaggerRequestExample(typeof(CategoryForCreatingDto), typeof(CategoryForCreatingDtoExample))]
 
-        public async Task<IActionResult> AddCategory([FromBody] Category category)
+        public async Task<IActionResult> CreateNewCategory([FromBody] CategoryForCreatingDto dto)
         {
-            await _categoryRepository.AddCategoryAsync(category);
+            var result = await _categoryService.CreateNewCategoryAsync(dto);
 
             return Created();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(Guid Id)
+        [HttpPut]
+        [SwaggerRequestExample(typeof(CategoryForUpdatingDto), typeof(CategoryForUpdatingDtoExample))]
+        public async Task<IActionResult> UpdateCategory([FromBody] CategoryForUpdatingDto dto)
         {
-            var result = await _categoryRepository.GetCategoryByIdAsync(Id);
+            var result = await _categoryService.UpdateCategoryAsync(dto);
 
-            if (result == null)
-            {
+            if(result == null)
                 return NotFound();
-            }
 
-            await _categoryRepository.DeleteCategoryAsync(Id);
-            return NoContent();
+            return Ok("Updated Successfully!");
         }
 
-        [HttpPut]
+        [HttpDelete("{Id}")]
 
-        public async Task<IActionResult> UpdateCategory([FromBody] Category category)
+        public async Task<IActionResult> DeleteCategory([FromRoute] Guid Id)
         {
-            var existingCategory = await _categoryRepository.GetCategoryByIdAsync(category.Id);
-            if (existingCategory == null)
+            var result =await _categoryService.DeleteCategoryAsync(Id);
+            if (result == 0)
             {
                 return NotFound();
             }
-            existingCategory.CategoryName = category.CategoryName;
-            await _categoryRepository.UpdateCategoryAsync(existingCategory);
-            return Ok($"Category ${category.CategoryName} Updated Successfully!");
-
+            return Ok("Category Deleted!");
         }
     }
 }

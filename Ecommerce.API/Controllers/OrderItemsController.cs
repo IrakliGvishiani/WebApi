@@ -1,4 +1,5 @@
-﻿using Ecommerce.API.Repository.Interfaces;
+﻿using Ecommerce.API.Entities;
+using Ecommerce.API.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
@@ -7,9 +8,9 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     public class OrderItemsController : ControllerBase
     {
-        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IGeneralRepository<OrderItem> _orderItemRepository;
 
-        public OrderItemsController(IOrderItemRepository orderItemRepository)
+        public OrderItemsController(IGeneralRepository<OrderItem> orderItemRepository)
         {
             _orderItemRepository = orderItemRepository;
         }
@@ -19,7 +20,7 @@ namespace Ecommerce.API.Controllers
 
          public async Task<IActionResult> GetAllOrderItems()
          {
-             var orderItems = await _orderItemRepository.GetAllOrderItemsAsync();
+             var orderItems = await _orderItemRepository.GetAllAsync(1,10,tracking: false);
              if (orderItems == null || !orderItems.Any())
              {
                  return NotFound("Order items are empty!");
@@ -31,7 +32,7 @@ namespace Ecommerce.API.Controllers
 
         public async Task<IActionResult> GetOrderItemById(Guid Id)
         {
-            var orderItem = await _orderItemRepository.GetOrderItemByIdAsync(Id);
+            var orderItem = await _orderItemRepository.GetByIdAsync(Id);
             if (orderItem == null)
             {
                 return NotFound("Order item not found!");

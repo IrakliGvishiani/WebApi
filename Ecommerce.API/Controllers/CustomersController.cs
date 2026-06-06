@@ -1,4 +1,5 @@
-﻿using Ecommerce.API.Repository.Interfaces;
+﻿using Ecommerce.API.Entities;
+using Ecommerce.API.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
@@ -7,9 +8,9 @@ namespace Ecommerce.API.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly ICustomerRepository _customerRepository;
+        private readonly IGeneralRepository<Customer> _customerRepository;
 
-        public CustomersController(ICustomerRepository customerRepository)
+        public CustomersController(IGeneralRepository<Customer> customerRepository)
         {
             _customerRepository = customerRepository;
         }
@@ -18,7 +19,7 @@ namespace Ecommerce.API.Controllers
 
         public async Task<IActionResult> GetAllCustomers()
         {
-            var customers = await _customerRepository.GetAllCustomersAsync();
+            var customers = await _customerRepository.GetAllAsync(1,10,tracking: false);
             if (customers == null || !customers.Any())
             {
                 return NotFound("Customers are empty!");
@@ -30,7 +31,7 @@ namespace Ecommerce.API.Controllers
 
         public async Task<IActionResult> GetCustomerById(Guid Id)
         {
-            var customer = await _customerRepository.GetCustomerById(Id);
+            var customer = await _customerRepository.GetByIdAsync(Id);
             if (customer == null)
             {
                 return NotFound($"Customer with Id: {Id} not found!");

@@ -1,18 +1,11 @@
-﻿using Ecommerce.API.Entities;
+﻿using Ecommerce.API.Data;
+using Ecommerce.API.Entities;
+using Ecommerce.API.Repository.Base;
 
 namespace Ecommerce.API.Repository.Interfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository : IRepositoryBase<Customer, ApplicationDbContext>
     {
-        Task<IEnumerable<Customer>> GetAllCustomersAsync();
-
-        Task<Customer> GetCustomerById(Guid id);
-
-        Task AddCustomerAsync(Customer customer);
-
-        Task UpdateCustomerAsync(Customer customer);
-
-        Task DeleteCustomerAsync(Guid id);
 
     }
 }
