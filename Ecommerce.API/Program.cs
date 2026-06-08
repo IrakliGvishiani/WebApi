@@ -1,5 +1,6 @@
 using Ecommerce.API.Data;
 using Ecommerce.API.Mapping;
+using Ecommerce.API.Middleware;
 using Ecommerce.API.Repository;
 using Ecommerce.API.Repository.Interfaces;
 using Ecommerce.API.Service;
@@ -76,6 +77,7 @@ namespace Ecommerce.API
 
 
             // Configure the HTTP request pipeline.
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseHttpsRedirection();

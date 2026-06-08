@@ -1,9 +1,12 @@
 ﻿using Ecommerce.API.Entities;
+using Ecommerce.API.Exceptions;
 using Ecommerce.API.Models.Product;
+using Ecommerce.API.Models.ProductDtos;
 using Ecommerce.API.Repository.Interfaces;
 using Ecommerce.API.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
+using System.Net;
 using static Ecommerce.API.Models.Examples;
 
 namespace Ecommerce.API.Controllers
@@ -49,8 +52,9 @@ namespace Ecommerce.API.Controllers
 
         public async Task<IActionResult> CreateProduct([FromBody] ProductForCreatingDto request)
         {
-            await _productRepository.CreateNewProductAsync(request);
-            return Created();
+          var createdProduct =  await _productRepository.CreateNewProductAsync(request);
+            var result = new CommonResponse(CommonResponseMessage.SuccessMessage,createdProduct,true,Convert.ToInt32(HttpStatusCode.Created));
+            return StatusCode(result.HttpStatusCode, result);
         }
 
         [HttpGet]
@@ -58,18 +62,41 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> GetAllProducts()
         {
             var products = await _productRepository.GetAllProductAsync();
-            return Ok(products);
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, products,true, Convert.ToInt32(HttpStatusCode.OK));
+            return StatusCode(response.HttpStatusCode, response);
         }
 
+        [HttpGet("single/{productId}")]
+
+        public async Task<IActionResult> GetProductById([FromRoute] Guid productId)
+        {
+            var product = await _productRepository.GetProductAsync(productId);
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, product,true, Convert.ToInt32(HttpStatusCode.OK));
+
+            return StatusCode(response.HttpStatusCode, response);
+        }
+
+        [HttpPut]
+
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductForUpdatingDto product) {
+
+
+            var result = await _productRepository.UpdateProductAsync(product);
+
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.OK));
+
+
+            return StatusCode(response.HttpStatusCode, response);
+        }
 
         [HttpDelete("{Id}")]
 
         public async Task<IActionResult> DeleteProduct([FromRoute]Guid Id)
         {
             var result = await _productRepository.DeleteProductAsync(Id);
-            if (result == 0)
-                return NotFound("Product not found!");
-            return Ok();
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.NoContent));
+
+            return StatusCode(response.HttpStatusCode, response);
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Ecommerce.API.Entities;
+using Ecommerce.API.Exceptions;
 using Ecommerce.API.Models.CategoryDtos;
 using Ecommerce.API.Repository.Interfaces;
 using Ecommerce.API.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
+using System.Net;
 using static Ecommerce.API.Models.Examples;
 
 namespace Ecommerce.API.Controllers
@@ -23,8 +25,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var result = await _categoryService.GetAllCategoryAsync();
-
-            return Ok(result);
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.OK));
+            return StatusCode(response.HttpStatusCode, response);
         }
 
         [HttpPost]
@@ -33,8 +35,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> CreateNewCategory([FromBody] CategoryForCreatingDto dto)
         {
             var result = await _categoryService.CreateNewCategoryAsync(dto);
-
-            return Created();
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.Created));
+            return StatusCode(response.HttpStatusCode, response);
         }
 
         [HttpPut]
@@ -42,11 +44,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> UpdateCategory([FromBody] CategoryForUpdatingDto dto)
         {
             var result = await _categoryService.UpdateCategoryAsync(dto);
-
-            if(result == null)
-                return NotFound();
-
-            return Ok("Updated Successfully!");
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.OK));
+            return StatusCode(response.HttpStatusCode, response);
         }
 
         [HttpDelete("{Id}")]
@@ -54,11 +53,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid Id)
         {
             var result =await _categoryService.DeleteCategoryAsync(Id);
-            if (result == 0)
-            {
-                return NotFound();
-            }
-            return Ok("Category Deleted!");
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.NoContent));
+            return StatusCode(response.HttpStatusCode, response);
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Ecommerce.API.Models.SupplierDtos;
+﻿using Ecommerce.API.Entities;
+using Ecommerce.API.Exceptions;
+using Ecommerce.API.Models.SupplierDtos;
 using Ecommerce.API.Repository.Interfaces;
 using Ecommerce.API.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Ecommerce.API.Controllers
 {
@@ -22,17 +25,17 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> GetAllSuppliers()
         {
             var suppliers = await _supplierService.GetAllSupplierAsync();
-
-            return Ok(suppliers);
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, suppliers, true, Convert.ToInt32(HttpStatusCode.OK));
+            return StatusCode(response.HttpStatusCode, response);
         }
 
         [HttpPost]
 
         public async Task<IActionResult> CreateNewSupplier([FromBody] SupplierForCreatingDto dto)
         {
-            await _supplierService.CreateNewSupplierAsync(dto);
-
-            return Created();
+           var result = await _supplierService.CreateNewSupplierAsync(dto);
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.Created));
+            return StatusCode(response.HttpStatusCode, response);
         }
 
         [HttpPut]
@@ -41,12 +44,9 @@ namespace Ecommerce.API.Controllers
         {
 
           var result =  await _supplierService.UpdateSupplierAsync(dto);
-            if (result == 0)
-            {
-                return NotFound();
-            }
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.OK));
 
-            return Ok("Updated Succesfully");
+            return StatusCode(response.HttpStatusCode, response);
 
         }
 
@@ -55,10 +55,8 @@ namespace Ecommerce.API.Controllers
         public async Task<IActionResult> DeleteSupplier([FromRoute] Guid Id)
         {
            var result = await _supplierService.DeleteSupplierAsync(Id);
-            if(result == 0)
-                return NotFound();
-
-            return Ok("Deleted Successfully!");
+            var response = new CommonResponse(CommonResponseMessage.SuccessMessage, result, true, Convert.ToInt32(HttpStatusCode.NoContent));
+            return StatusCode(response.HttpStatusCode, response);
         }
     }
 }

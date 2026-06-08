@@ -1,5 +1,6 @@
 ﻿using Ecommerce.API.Models.CategoryDtos;
 using Ecommerce.API.Models.Product;
+using Ecommerce.API.Models.ProductDtos;
 using Ecommerce.API.Models.SupplierDtos;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -15,6 +16,22 @@ public class Examples
             return new ProductForCreatingDto
             {
                 ProductName = "Samsung Galaxy A51",
+                Price = 999.99m,
+                Quantity = 100,
+                CategoryId = Guid.Parse("11111111-0000-0000-0000-000000000001"),
+                SupplierId = Guid.Parse("22222222-0000-0000-0000-000000000001")
+            };
+        }
+    }
+
+    public sealed record ProductForUpdatingDtoExample : IExamplesProvider<ProductForUpdatingDto>
+    {
+        public ProductForUpdatingDto GetExamples()
+        {
+            return new ProductForUpdatingDto
+            {
+                Id = Guid.Parse("4aa6f825-3366-4ece-f777-08dec305b35b"),
+                ProductName = "Updated Samsung Galaxy A51",
                 Price = 999.99m,
                 Quantity = 100,
                 CategoryId = Guid.Parse("11111111-0000-0000-0000-000000000001"),

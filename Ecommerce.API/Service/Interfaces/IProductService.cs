@@ -8,7 +8,9 @@ namespace Ecommerce.API.Service.Interfaces
     {
         Task<int> CreateNewProductAsync(ProductForCreatingDto model);
 
-        Task<IEnumerable<ProductForGettingDto>> GetAllProductAsync();
+        Task<IEnumerable<ProductListForGettingDto>> GetAllProductAsync();
+
+        Task<ProductForGettingDto> GetProductAsync(Guid Id);
 
         Task<int> DeleteProductAsync(Guid ProductId);
 

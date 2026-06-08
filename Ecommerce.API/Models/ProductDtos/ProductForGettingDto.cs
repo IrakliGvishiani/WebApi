@@ -1,4 +1,5 @@
 ﻿using Ecommerce.API.Models.CategoryDtos;
+using Ecommerce.API.Models.SupplierDtos;
 
 namespace Ecommerce.API.Models.ProductDtos
 {
@@ -10,5 +11,6 @@ namespace Ecommerce.API.Models.ProductDtos
 
        public CategoryForGettingDto Category { get; set; }
      
+        public SupplierForGettingDto Supplier { get; set; }
     }
 }
